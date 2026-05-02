@@ -3,9 +3,13 @@ import Button from "../../components/Button/Button";
 import { useCart, useProducts } from "../../context";
 import { formatPrice } from "../../utils";
 import { useNavigate, useParams } from "react-router";
-import RadioButton from "../../components/RadioButton/RadioButton";
+import RadioGroup from "../../components/RadioButton/RadioGroup";
 import Selector from "../../components/Selector/Selector";
 import type { Product } from "../../types";
+import withForm from "../../components/withForm";
+
+const EnhancedRadioGroup = withForm(RadioGroup);
+const EnhancedSelector = withForm(Selector);
 
 export default function Product() {
   const navigate = useNavigate();
@@ -99,16 +103,12 @@ export default function Product() {
             {product.colors && product.colors.length > 1 && (
               <div className="space-y-3">
                 <h3 className="text-lg font-semibold text-[#0B254B]">Cor</h3>
-                <div className="flex flex-wrap gap-3">
-                  {product.colors.map((color) => (
-                    <RadioButton
-                      key={color}
-                      label={color.charAt(0).toUpperCase() + color.slice(1)}
-                      value={color}
-                      onChange={setSelectedColor}
-                    />
-                  ))}
-                </div>
+                <EnhancedRadioGroup
+                  options={product.colors}
+                  initialValue={selectedColor}
+                  onChange={(value) => setSelectedColor(value as string)}
+                  controlledValue={selectedColor}
+                />
               </div>
             )}
 
@@ -118,10 +118,11 @@ export default function Product() {
                 <h3 className="text-lg font-semibold text-[#0B254B]">
                   Tamanho
                 </h3>
-                <Selector
+                <EnhancedSelector
                   label="Selecione o tamanho"
                   options={product.sizes}
-                  onChange={setSelectedSize}
+                  onChange={(value) => setSelectedSize(value as string)}
+                  controlledValue={selectedSize}
                 />
               </div>
             )}
@@ -131,12 +132,13 @@ export default function Product() {
               <h3 className="text-lg font-semibold text-[#0B254B]">
                 Quantidade
               </h3>
-              <Selector
+              <EnhancedSelector
                 label="Selecione a quantidade"
                 options={Array.from({ length: 10 }, (_, i) =>
                   (i + 1).toString(),
                 )}
                 onChange={(value) => setQuantity(Number(value))}
+                controlledValue={quantity}
               />
             </div>
 
