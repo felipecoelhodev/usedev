@@ -3,18 +3,19 @@ import ProductCard from "../../components/ProductCard/ProductCard";
 import { useCategories, useProducts } from "../../context";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import { useState } from "react";
+import { useSearch } from "../../hooks/useSearch";
 
 const Home = () => {
   const navigate = useNavigate();
   const { categories } = useCategories();
+  const { searchTerm, setSearchTerm, clearSearch, isValidSearch } = useSearch();
   const { products, setSelectedProduct } = useProducts();
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name
       .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+      .includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory
       ? product.category === selectedCategory
       : true;
@@ -23,12 +24,12 @@ const Home = () => {
 
   const handleCategoryClick = (categoryId: number) => {
     setSelectedCategory(selectedCategory === categoryId ? null : categoryId);
-    setSearchQuery(""); // Clear search when changing category
+    clearSearch(); // Clear search when changing category
   };
 
   const handleClearFilters = () => {
     setSelectedCategory(null);
-    setSearchQuery("");
+    clearSearch();
   };
 
   return (
@@ -45,7 +46,7 @@ const Home = () => {
         <div className="max-w-xl mx-auto">
           <SearchInput
             placeholder="Buscar produtos..."
-            onSearch={setSearchQuery}
+            onSearch={setSearchTerm}
           />
         </div>
       </div>
@@ -88,7 +89,7 @@ const Home = () => {
           <h2 className="text-2xl md:text-3xl font-bold orbitron-bold text-[#0B254B] text-center">
             Produtos
           </h2>
-          {(selectedCategory || searchQuery) && (
+          {(selectedCategory || isValidSearch) && (
             <button
               onClick={handleClearFilters}
               className="text-[#0B254B] hover:text-[#0B254B]/80 transition-colors mt-4 md:mt-0"
@@ -103,8 +104,8 @@ const Home = () => {
               Nenhum produto encontrado
             </p>
             <p className="text-gray-600 mb-8">
-              {searchQuery
-                ? `Não encontramos produtos que correspondam à sua busca "${searchQuery}"`
+              {isValidSearch
+                ? `Não encontramos produtos que correspondam à sua busca "${searchTerm}"`
                 : selectedCategory
                   ? "Não há produtos disponíveis nesta categoria"
                   : "Não há produtos disponíveis no momento"}
