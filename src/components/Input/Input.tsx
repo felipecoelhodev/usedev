@@ -1,5 +1,4 @@
 import type { InputHTMLAttributes } from "react";
-import withForm from "../withForm";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -19,5 +18,4 @@ const Input = ({ label, ...props }: InputProps) => {
   );
 };
 
-const EnhancedInput = withForm(Input);
-export default EnhancedInput;
+export default Input;

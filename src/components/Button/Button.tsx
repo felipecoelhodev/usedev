@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from "react";
 import CartIcon from "../../assets/add-cart.svg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children?: React.ReactNode;
+  children: React.ReactNode;
   variant?: "primary" | "secondary" | "add-to-cart";
 }
 
@@ -21,7 +21,7 @@ const Button = ({ children, variant = "primary", ...props }: ButtonProps) => {
       {variant === "add-to-cart" && (
         <img src={CartIcon} alt="add-to-cart" className="w-4 h-4" />
       )}
-      {children ?? props.content}
+      {children}
     </button>
   );
 };
